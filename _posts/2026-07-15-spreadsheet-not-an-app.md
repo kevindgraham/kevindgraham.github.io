@@ -15,11 +15,15 @@ The old way meant hours in Excel, formulas to figure out, and a spreadsheet that
 
 The simple way looks like this:
 
-- You connect your Google account to an AI tool like ChatGPT or Claude
+- You connect an AI tool like ChatGPT to your Google Sheet
 - You describe what you want your budget to track — in plain, everyday language
-- The AI builds the actual Google Sheet for you, live, right where you can see it
+- The AI builds the actual spreadsheet for you, live, right where you can see it
 
 No formulas to learn. No templates to hunt down. Just a conversation.
+
+ChatGPT can actually build and edit a spreadsheet live. There's an official ChatGPT add-on for Google Sheets (and Excel). You install it from the Google Workspace Marketplace, it opens as a sidebar inside your spreadsheet, and you just type what you want: "build me a budget tracker with due dates and balances." It builds it, edits it, adds formulas — right there in the sheet.
+
+Claude works a little differently. Connect your Google account and Claude can read your spreadsheet and help you think through what to track and how to organize it — you'd be the one entering it in. Either way, you're getting an AI thinking partner for your budget, not just another app to manage.
 
 ## What You Can Ask It to Track
 
