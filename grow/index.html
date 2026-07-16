@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grow — Kevin D. Graham</title>
+<meta name="description" content="Social media management, posting strategy, and local visibility help for people and small businesses who want to be found, from Kevin D. Graham.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;800&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF5EC;--ink:#241F1A;--navy:#1B2A45;--navy-deep:#132036;
+    --gold:#E2A63D;--gold-deep:#C98A22;--line:#DDD2BE;--cream-card:#FFFDF8;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Source Sans 3', sans-serif;font-size:17px;line-height:1.6;}
+  h1,h2,h3{font-family:'Roboto Slab', serif;margin:0;line-height:1.1;}
+  a{color:inherit;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(250,245,236,0.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;}
+  .brand{font-family:'Roboto Slab', serif;font-weight:800;font-size:1.15rem;letter-spacing:-0.01em;text-decoration:none;}
+  .navlinks{display:flex;gap:24px;font-size:0.95rem;font-weight:500;flex-wrap:wrap;}
+  .navlinks a{text-decoration:none;opacity:0.75;transition:opacity .2s;}
+  .navlinks a:hover{opacity:1;}
+  .navlinks a:focus-visible, a:focus-visible{outline:2px solid var(--gold-deep);outline-offset:3px;}
+
+  section{padding:64px 0 80px;}
+  .eyebrow{font-family:'JetBrains Mono', monospace;font-size:0.78rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:18px;display:block;}
+  .page-head h1{font-size:clamp(2rem,4vw,2.8rem);}
+  .page-head p{margin-top:16px;color:#4B4438;font-size:1.1rem;max-width:56ch;}
+  .soon-note{
+    margin-top:36px;padding:22px 24px;
+    background:var(--cream-card);border:1px solid var(--line);border-radius:6px;
+    font-style:italic;color:#8A8272;font-size:0.96rem;max-width:56ch;
+  }
+  .cta-row{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap;}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:3px;font-weight:600;font-size:0.98rem;text-decoration:none;border:1px solid transparent;transition:transform .15s ease, background .15s ease;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-gold{background:var(--gold);color:var(--navy-deep);}
+  .btn-gold:hover{background:#EDB559;}
+  .btn-outline{border-color:var(--line);color:var(--ink);}
+  .btn-outline:hover{border-color:var(--gold-deep);}
+
+  footer{background:var(--navy-deep);color:#D8D0C0;padding:48px 0 32px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  footer a{text-decoration:none;font-weight:600;color:#F4EFE4;}
+  footer a:hover{color:var(--gold);}
+  .foot-note{font-size:0.85rem;color:#7C87A0;}
+
+  @media (max-width:520px){.navlinks{display:none;}}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto;}.btn{transition:none;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/">Kevin D. Graham</a>
+    <div class="navlinks">
+      <a href="/create">Create</a>
+      <a href="/grow">Grow</a>
+      <a href="/ai-made-simple">AI Made Simple</a>
+      <a href="/toolkit">Toolkit</a>
+      <a href="/#blog">Blog</a>
+      <a href="/#about">About</a>
+      <a href="/#connect">Connect</a>
+    </div>
+  </div>
+</nav>
+
+<section>
+  <div class="wrap">
+    <div class="page-head">
+      <span class="eyebrow">Grow</span>
+      <h1>Grow Your Visibility</h1>
+      <p>Social media management, posting strategy, and local visibility help for people and small businesses who want to be found.</p>
+    </div>
+    <p class="soon-note">More Grow content — strategy breakdowns, posting frameworks, and local visibility tips — is on the way. Check the Toolkit for tools you can use right now, or the Blog for posts as they launch.</p>
+    <div class="cta-row">
+      <a class="btn btn-gold" href="/toolkit">Browse the Toolkit</a>
+      <a class="btn btn-outline" href="/#blog">See the Blog</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="foot-note">© 2026 Kevin D. Graham · Graham Strategic Media</span>
+    <a href="/#connect">Get in touch →</a>
+  </div>
+</footer>
+
+</body>
+</html>
