@@ -2,3 +2,10 @@ title: Kevin D. Graham
 description: Practical help for creating better content, growing your visibility, and using AI with confidence.
 permalink: /blog/:title/
 url: "https://kevindgraham.com"
+
+# jekyll-sitemap auto-generates /sitemap.xml on every build, listing every
+# page and post automatically (including future ones — no manual updates
+# needed). To exclude a future page (admin/preview/draft), add
+# "sitemap: false" to its front matter.
+plugins:
+  - jekyll-sitemap

@@ -7,14 +7,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ page.title }} — Kevin D. Graham</title>
 <meta name="description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+<link rel="canonical" href="{{ page.url | absolute_url }}">
 
-<!-- Open Graph tags, so links shared on Facebook/etc. show a title, description, and preview image. -->
+<!-- Open Graph + Twitter card tags, so links shared on Facebook/X/etc. show a title, description, and preview image. Falls back to the site's default share image if a post doesn't set its own "image" front matter. -->
 <meta property="og:title" content="{{ page.title }}">
 <meta property="og:description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
 <meta property="og:url" content="{{ page.url | absolute_url }}">
-{% if page.image %}
-<meta property="og:image" content="{{ page.image | absolute_url }}">
-{% endif %}
+<meta property="og:type" content="article">
+<meta property="og:image" content="{{ page.image | default: '/BioPic.jpg' | absolute_url }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page.title }}">
+<meta name="twitter:description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+<meta name="twitter:image" content="{{ page.image | default: '/BioPic.jpg' | absolute_url }}">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ page.title | jsonify }},
+  "description": {{ page.excerpt | strip_html | truncate: 160 | jsonify }},
+  "image": "{{ page.image | default: '/BioPic.jpg' | absolute_url }}",
+  "url": "{{ page.url | absolute_url }}",
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "dateModified": "{{ page.date | date_to_xmlschema }}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ page.url | absolute_url }}"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Kevin D. Graham",
+    "url": "https://kevindgraham.com"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Kevin D. Graham",
+    "url": "https://kevindgraham.com"
+  }
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;800&family=Source+Sans+3:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
