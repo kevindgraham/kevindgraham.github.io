@@ -3,6 +3,7 @@ layout: post
 title: "You Don't Need Another Budgeting App. You Need One Spreadsheet and a Conversation."
 date: 2026-07-15
 pillar: "AI Made Simple"
+image: /images/blog/budget.png
 ---
 
 Open any app store and you'll find dozens of budgeting apps promising to fix your finances. Some link to your bank. Some charge a monthly fee. Some want you to categorize every latte you buy. And most of them get abandoned within a few weeks.

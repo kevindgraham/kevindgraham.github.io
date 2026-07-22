@@ -207,13 +207,15 @@
     background:var(--cream-card);
     border:1px solid var(--line);
     border-radius:6px;
-    padding:22px 20px;
+    overflow:hidden;
     text-decoration:none;
     color:inherit;
     display:flex;flex-direction:column;gap:8px;
     transition:transform .15s ease, box-shadow .15s ease;
   }
   .blog-post-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(27,42,69,0.12);}
+  .blog-post-card-body{padding:22px 20px;display:flex;flex-direction:column;gap:8px;flex:1;}
+  .blog-post-thumb{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;}
   .blog-post-tag{
     font-family:'JetBrains Mono',monospace;
     font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;
@@ -454,10 +456,15 @@
     <div class="blog-posts">
       {% for post in site.posts limit: 4 %}
       <a class="blog-post-card" href="{{ post.url | relative_url }}">
-        <span class="blog-post-tag">{{ post.pillar }}</span>
-        <h3>{{ post.title }}</h3>
-        <p>{{ post.excerpt | strip_html | truncate: 110 }}</p>
-        <span class="blog-post-date">{{ post.date | date: "%B %-d, %Y" }}</span>
+        {% if post.image %}
+        <img class="blog-post-thumb" src="{{ post.image | relative_url }}" alt="{{ post.title }}">
+        {% endif %}
+        <div class="blog-post-card-body">
+          <span class="blog-post-tag">{{ post.pillar }}</span>
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.excerpt | strip_html | truncate: 110 }}</p>
+          <span class="blog-post-date">{{ post.date | date: "%B %-d, %Y" }}</span>
+        </div>
       </a>
       {% endfor %}
     </div>

@@ -34,6 +34,8 @@
   .post-head h1{font-size:clamp(1.8rem,4vw,2.6rem);}
   .post-date{margin-top:12px;font-size:0.92rem;color:#8A8272;}
 
+  .post-featured-img{width:100%;max-width:480px;height:auto;border-radius:8px;display:block;margin:28px auto 0;box-shadow:0 10px 24px rgba(27,42,69,0.14);}
+
   .post-body{margin-top:36px;font-size:1.05rem;color:#3A342C;}
   .post-body p{margin:0 0 20px;}
   .post-body h2{font-size:1.35rem;margin:36px 0 16px;}
@@ -87,6 +89,9 @@
       <h1>{{ page.title }}</h1>
       <p class="post-date">{{ page.date | date: "%B %-d, %Y" }}</p>
     </div>
+    {% if page.image %}
+    <img class="post-featured-img" src="{{ page.image | relative_url }}" alt="{{ page.title }}">
+    {% endif %}
     <div class="post-body">
       {{ content }}
     </div>
