@@ -14,11 +14,11 @@
 <meta property="og:description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
 <meta property="og:url" content="{{ page.url | absolute_url }}">
 <meta property="og:type" content="article">
-<meta property="og:image" content="{{ page.image | default: '/BioPic.jpg' | absolute_url }}">
+<meta property="og:image" content="{{ page.image | default: '/BioPic-compressed.jpg' | absolute_url }}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{{ page.title }}">
 <meta name="twitter:description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
-<meta name="twitter:image" content="{{ page.image | default: '/BioPic.jpg' | absolute_url }}">
+<meta name="twitter:image" content="{{ page.image | default: '/BioPic-compressed.jpg' | absolute_url }}">
 
 <script type="application/ld+json">
 {
@@ -26,7 +26,7 @@
   "@type": "BlogPosting",
   "headline": {{ page.title | jsonify }},
   "description": {{ page.excerpt | strip_html | truncate: 160 | jsonify }},
-  "image": "{{ page.image | default: '/BioPic.jpg' | absolute_url }}",
+  "image": "{{ page.image | default: '/BioPic-compressed.jpg' | absolute_url }}",
   "url": "{{ page.url | absolute_url }}",
   "datePublished": "{{ page.date | date_to_xmlschema }}",
   "dateModified": "{{ page.date | date_to_xmlschema }}",
