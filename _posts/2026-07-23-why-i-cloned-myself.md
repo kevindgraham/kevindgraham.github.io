@@ -3,7 +3,7 @@ layout: post
 title: "Why I Cloned Myself"
 date: 2026-07-23
 pillar: "AI Made Simple"
-image: /images/blog/clone.png
+image: /images/blog/cloneImage.jpeg
 ---
 
 I cloned myself the other day. My voice, my image — built so I can create content without stepping in front of a camera every single time.
