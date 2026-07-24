@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function(){
+    var saved = localStorage.getItem('promptStarterTheme');
+    var theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<title>Prompt Builder — Kevin D. Graham</title>
+<meta name="description" content="Pick a category, answer a few plain-English questions, and get a ready-to-copy AI prompt for ChatGPT, Claude, or Gemini — free, from Kevin D. Graham.">
+<link rel="canonical" href="https://kevindgraham.com/toolkit/prompt-builder/">
+
+<meta property="og:title" content="Prompt Builder — Kevin D. Graham">
+<meta property="og:description" content="Pick a category, answer a few plain-English questions, and get a ready-to-copy AI prompt for ChatGPT, Claude, or Gemini — free, from Kevin D. Graham.">
+<meta property="og:url" content="https://kevindgraham.com/toolkit/prompt-builder/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://kevindgraham.com/BioPic-compressed.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Prompt Builder — Kevin D. Graham">
+<meta name="twitter:description" content="Pick a category, answer a few plain-English questions, and get a ready-to-copy AI prompt for ChatGPT, Claude, or Gemini — free, from Kevin D. Graham.">
+<meta name="twitter:image" content="https://kevindgraham.com/BioPic-compressed.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600;800&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* site shell palette */
+    --paper:#F5F1EA;
+    --cream-card:#FAF7F1;
+    --ink:#001A4A;
+    --ink-soft:#5C6B87;
+    --line:#E2D9C8;
+    --navy:#09356D;
+    --navy-deep:#001A4A;
+    --gold:#E9B45B;
+    --gold-deep:#D49F45;
+    --shadow: 0 8px 24px rgba(0,26,74,0.10);
+
+    /* per-category accent colors — unchanged from the original tool design,
+       these are functional (tell categories apart), not decorative */
+    --coral:#FF6B5B;
+    --coral-dark:#E04E3D;
+    --sunny:#FFC857;
+    --sunny-dark:#B98314;
+    --mint:#37B99A;
+    --mint-bg:#DFF7EF;
+    --pink:#FF8FB1;
+    --pink-bg:#FFE7EE;
+    --sky:#4F9FEA;
+    --sky-bg:#E4F1FE;
+    --sunny-bg:#FFF3D9;
+    --plum:#8B5CF6;
+    --plum-bg:#EFE7FE;
+    --olive:#7C9C3F;
+    --olive-bg:#EAF2DB;
+    --amber:#E0862F;
+    --amber-bg:#FDEBD8;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Sans 3', sans-serif;
+    font-size:17px;
+    line-height:1.6;
+  }
+  h1,h2,h3,.display{font-family:'Roboto Slab', serif;margin:0;line-height:1.1;}
+  a{color:inherit;}
+
+  /* ---------- Site chrome: nav, footer (matches toolkit/ai-made-simple pages) ---------- */
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+  nav{position:sticky;top:0;z-index:50;background:rgba(250,245,236,0.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;}
+  .brand{font-family:'Roboto Slab', serif;font-weight:800;font-size:1.15rem;letter-spacing:-0.01em;text-decoration:none;}
+  .navlinks{display:flex;gap:24px;font-size:0.95rem;font-weight:500;flex-wrap:wrap;}
+  .navlinks a{text-decoration:none;opacity:0.75;transition:opacity .2s;}
+  .navlinks a:hover{opacity:1;}
+  .navlinks a:focus-visible, a:focus-visible{outline:2px solid var(--gold-deep);outline-offset:3px;}
+
+  footer{background:var(--navy-deep);color:#D8D0C0;padding:48px 0 32px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  footer a{text-decoration:none;font-weight:600;color:#F4EFE4;}
+  footer a:hover{color:var(--gold);}
+  .foot-note{font-size:0.85rem;color:#7C87A0;}
+
+  /* ---------- App content (namespaced app-* to avoid colliding with site classes above) ---------- */
+  .app-wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:32px 16px 80px;
+  }
+
+  .app-header{text-align:center;margin-bottom:28px;}
+  .app-eyebrow{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--cream-card);
+    border:1.5px solid var(--line);
+    color:var(--gold-deep);
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:12.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:6px 14px;
+    border-radius:100px;
+    margin-bottom:14px;
+  }
+  .app-header h1{
+    font-size:clamp(28px,5vw,40px);
+    font-weight:800;
+    margin:0 0 8px;
+    line-height:1.15;
+  }
+  .app-header p{
+    color:var(--ink-soft);
+    font-size:16px;
+    max-width:480px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+
+  /* ---------- Confidence meter ---------- */
+  .meter{display:flex;align-items:center;gap:10px;max-width:420px;margin:22px auto 0;}
+  .meter-track{flex:1;height:10px;background:var(--line);border-radius:100px;overflow:hidden;}
+  .meter-fill{height:100%;background:linear-gradient(90deg, var(--gold-deep), var(--gold));border-radius:100px;transition:width .45s cubic-bezier(.34,1.56,.64,1);}
+  .meter-label{font-size:13px;font-weight:700;color:var(--ink-soft);white-space:nowrap;}
+
+  /* ---------- Card ---------- */
+  .stage{
+    background:var(--cream-card);
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:32px;
+    box-shadow:var(--shadow);
+    animation:rise .35s ease both;
+  }
+  @keyframes rise{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+  @media (max-width:600px){.stage{padding:22px;border-radius:10px;}}
+
+  .stage h2{font-size:23px;font-weight:700;margin:0 0 6px;}
+  .stage .sub{color:var(--ink-soft);font-size:14.5px;margin:0 0 24px;}
+
+  /* ---------- Category grid ---------- */
+  .cat-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(150px,1fr));gap:14px;}
+  .cat-card{
+    border:2px solid var(--line);
+    background:var(--paper);
+    border-radius:12px;
+    padding:20px 16px;
+    text-align:left;
+    cursor:pointer;
+    font-family:inherit;
+    transition:transform .15s ease, border-color .15s ease, background .15s ease;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .cat-card:hover{transform:translateY(-3px);border-color:var(--cat-color, var(--gold));}
+  .cat-card:active{transform:translateY(-1px) scale(.98);}
+  .cat-icon{
+    width:42px;height:42px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:21px;background:var(--cat-bg, var(--pink-bg));
+  }
+  .cat-card .cat-title{font-family:'Roboto Slab', serif;font-weight:700;font-size:16.5px;color:var(--ink);}
+  .cat-card .cat-desc{font-size:13px;color:var(--ink-soft);line-height:1.4;}
+
+  /* ---------- Subtask list ---------- */
+  .sub-list{display:flex;flex-direction:column;gap:10px;}
+  .sub-item{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    border:2px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    background:var(--paper);
+    cursor:pointer;
+    font-family:inherit;
+    text-align:left;
+    transition:border-color .15s ease, transform .15s ease;
+    width:100%;
+  }
+  .sub-item:hover{border-color:var(--cat-color, var(--gold)); transform:translateX(2px);}
+  .sub-item .sub-title{font-weight:700; font-size:15.5px;}
+  .sub-item .sub-arrow{font-size:18px;color:var(--cat-color, var(--gold));flex-shrink:0;}
+
+  /* ---------- Questions ---------- */
+  .q-block{margin-bottom:20px;}
+  .q-block label{display:block;font-weight:700;font-size:14.5px;margin-bottom:8px;}
+  .q-block textarea, .q-block input[type="text"], .q-block select{
+    width:100%;font-family:inherit;font-size:15px;padding:12px 14px;
+    border:2px solid var(--line);border-radius:8px;
+    background:var(--paper);color:var(--ink);resize:vertical;
+    transition:border-color .15s ease;
+  }
+  .q-block textarea:focus, .q-block input:focus, .q-block select:focus{outline:none;border-color:var(--cat-color, var(--gold));}
+  .q-block textarea{min-height:64px;}
+  .q-hint{font-size:12.5px;color:var(--ink-soft);margin-top:6px;}
+
+  /* ---------- Live preview chips ---------- */
+  .preview-strip{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 26px;min-height:2px;}
+  .chip{background:var(--mint-bg);color:#0E6B52;font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:100px;animation:pop .25s ease both;}
+  @keyframes pop{from{opacity:0; transform:scale(.85);} to{opacity:1; transform:scale(1);}}
+
+  /* ---------- Buttons ---------- */
+  .app-btn-row{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;}
+  .app-btn{
+    font-family:inherit;font-weight:700;font-size:15px;padding:13px 24px;
+    border-radius:8px;border:none;cursor:pointer;
+    transition:transform .12s ease, opacity .12s ease;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .app-btn:active{transform:scale(.97);}
+  .app-btn-primary{background:var(--gold);color:var(--navy-deep);}
+  .app-btn-primary:hover{background:var(--gold-deep);}
+  .app-btn-primary:disabled{opacity:.4; cursor:not-allowed;}
+  .app-btn-ghost{background:transparent;color:var(--ink-soft);border:2px solid var(--line);}
+  .app-btn-ghost:hover{border-color:var(--ink-soft); color:var(--ink);}
+
+  /* ---------- Result ---------- */
+  .result-card{background:var(--paper);border:2px dashed var(--line);border-radius:12px;padding:22px;position:relative;margin-bottom:18px;}
+  .result-text{font-size:15.5px;line-height:1.65;white-space:pre-wrap;color:var(--ink);}
+  .celebrate{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--navy-deep);font-weight:800;font-size:13.5px;padding:7px 16px;border-radius:100px;margin-bottom:16px;}
+  .copy-feedback{font-size:13.5px;font-weight:700;color:var(--mint);opacity:0;transition:opacity .2s ease;align-self:center;}
+  .copy-feedback.show{opacity:1;}
+
+  /* ---------- Email capture (MailerLite) ---------- */
+  .app-subscribe{
+    margin-top:22px;
+    padding:22px 24px;
+    background:var(--cream-card);
+    border:1.5px solid var(--line);
+    border-radius:12px;
+  }
+  .app-subscribe-head{margin-bottom:14px;}
+  .app-subscribe-head strong{display:block;font-family:'Roboto Slab', serif;font-size:16px;color:var(--ink);margin-bottom:4px;}
+  .app-subscribe-head span{font-size:13.5px;color:var(--ink-soft);}
+
+  .destination-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;}
+  .dest-pill{
+    display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+    font-size:13.5px;font-weight:700;padding:9px 16px;border-radius:100px;
+    border:2px solid var(--line);color:var(--ink);background:var(--cream-card);
+    transition:border-color .15s ease;
+  }
+  .dest-pill:hover{border-color:var(--gold);}
+
+  .crumbs{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:18px;}
+  .crumbs button{background:none;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:13px;color:var(--ink-soft);padding:0;}
+  .crumbs button:hover{color:var(--gold-deep);}
+  .crumbs .sep{opacity:.5;}
+  .crumbs .current{color:var(--ink);}
+
+  .app-footer{text-align:center;margin-top:28px;font-size:12.5px;color:var(--ink-soft);}
+
+  /* ---------- Top bar (dark mode + saved prompts) ---------- */
+  .top-bar{display:flex;justify-content:flex-end;gap:10px;margin-bottom:12px;}
+  .icon-btn{
+    width:40px;height:40px;border-radius:100px;
+    background:var(--cream-card);border:1.5px solid var(--line);color:var(--ink);
+    font-size:17px;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:border-color .15s ease;
+  }
+  .icon-btn:hover{border-color:var(--gold);}
+  .icon-btn--small{width:32px;height:32px;font-size:14px;flex-shrink:0;}
+
+  /* ---------- Onboarding banner ---------- */
+  .onboarding-banner{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    background:var(--mint-bg);border:1.5px solid var(--mint);color:var(--ink);
+    border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:14px;flex-wrap:wrap;
+  }
+  .onboarding-banner p{margin:0;}
+
+  /* ---------- Surprise me banner ---------- */
+  .surprise-banner{background:var(--gold);color:var(--navy-deep);border-radius:10px;padding:12px 16px;font-size:14px;font-weight:600;margin-bottom:18px;}
+  .surprise-banner button{background:none;border:none;text-decoration:underline;font-weight:700;color:var(--navy-deep);cursor:pointer;font-family:inherit;font-size:inherit;padding:0;}
+
+  /* ---------- Custom "write your own" card ---------- */
+  .cat-card--custom{border-style:dashed;border-color:var(--line);background:var(--cream-card);}
+  .cat-card--custom:hover{border-color:var(--ink-soft);}
+  .cat-card--custom .cat-icon{background:var(--line);}
+
+  /* ---------- Saved prompt history ---------- */
+  .history-list{display:flex;flex-direction:column;gap:10px;}
+  .history-item{
+    display:flex;align-items:center;gap:14px;
+    border:2px solid var(--line);border-radius:10px;padding:14px 16px;
+    background:var(--paper);cursor:pointer;transition:border-color .15s ease;
+  }
+  .history-item:hover{border-color:var(--cat-color, var(--gold));}
+  .history-item__body{flex:1; min-width:0;}
+  .history-item__title{font-weight:700; font-size:14.5px;}
+  .history-item__preview{font-size:13px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:2px 0;}
+  .history-item__date{font-size:12px; color:var(--ink-soft);}
+
+  /* ---------- Image export ---------- */
+  .image-format-picker{align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;}
+  .share-card{
+    position:fixed;left:-9999px;top:0;
+    background:var(--cream-card);color:var(--ink);
+    border-radius:16px;padding:32px 28px;box-sizing:border-box;
+    display:flex;flex-direction:column;align-items:center;
+    font-family:'Source Sans 3', sans-serif;
+  }
+  .share-card__brand{font-family:'Roboto Slab', serif;font-weight:800;font-size:20px;color:var(--navy-deep);}
+  .share-card__tag{font-family:'Roboto Slab', serif;font-weight:700;font-size:13px;padding:6px 14px;border-radius:100px;margin-top:10px;white-space:nowrap;}
+  .share-card__text-wrap{flex:1;width:100%;display:flex;align-items:center;overflow:hidden;margin:18px 0;}
+  .share-card__text{width:100%;text-align:center;font-weight:600;line-height:1.5;}
+  .share-card__handle{font-weight:700;font-size:13px;color:var(--ink-soft);}
+
+  /* ---------- Accessibility: focus states ---------- */
+  button:focus-visible, a:focus-visible, input:focus-visible,
+  textarea:focus-visible, select:focus-visible, [tabindex]:focus-visible{
+    outline:3px solid var(--gold-deep);
+    outline-offset:2px;
+  }
+
+  /* ---------- Dark mode ---------- */
+  :root[data-theme="dark"]{
+    --paper:#071D40;
+    --cream-card:#0F2A56;
+    --ink:#F5F1EA;
+    --ink-soft:#B9C4D9;
+    --line:#1E3E6E;
+    --shadow: 0 8px 24px rgba(0,0,0,0.35);
+    --pink-bg:#3A2A38;
+    --mint-bg:#1E3A34;
+    --sky-bg:#1E2F42;
+    --sunny-bg:#3A331E;
+    --plum-bg:#2E2650;
+    --olive-bg:#2A331E;
+    --amber-bg:#3A2A1C;
+  }
+  :root[data-theme="dark"] .app-eyebrow{color:var(--gold);}
+  :root[data-theme="dark"] .crumbs button:hover{color:var(--gold);}
+  :root[data-theme="dark"] .chip{color:#8FE8CB;}
+  :root[data-theme="dark"] button:focus-visible,
+  :root[data-theme="dark"] a:focus-visible,
+  :root[data-theme="dark"] input:focus-visible,
+  :root[data-theme="dark"] textarea:focus-visible,
+  :root[data-theme="dark"] select:focus-visible,
+  :root[data-theme="dark"] [tabindex]:focus-visible{
+    outline-color:var(--gold);
+  }
+
+  @media (max-width:820px){
+    /* (no toolkit-card rules on this page; kept for parity with site breakpoint set) */
+  }
+  @media (max-width:520px){.navlinks{display:none;}}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .app-btn{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/images/logo-header.svg" alt="Kevin D. Graham" style="height:44px;display:block;"></a>
+    <div class="navlinks">
+      <a href="/create">Create</a>
+      <a href="/grow">Grow</a>
+      <a href="/ai-made-simple">AI Made Simple</a>
+      <a href="/toolkit">Toolkit</a>
+      <a href="/#blog">Blog</a>
+      <a href="/#about">About</a>
+      <a href="/#connect">Connect</a>
+    </div>
+  </div>
+</nav>
+
+<div class="app-wrap">
+  <div class="top-bar">
+    <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Switch to dark mode">🌙</button>
+    <button class="icon-btn" onclick="goHistory()" aria-label="View saved prompts">🗂️</button>
+  </div>
+
+  <div class="app-header">
+    <span class="app-eyebrow">✨ AI Made Simple</span>
+    <h1>Prompt Builder</h1>
+    <p>Never stare at a blank AI chat box again. Pick what you need, answer a few easy questions, and get a ready-to-use prompt.</p>
+  </div>
+
+  <div class="meter">
+    <span class="meter-label" id="meter-left">😳 Blank screen</span>
+    <div class="meter-track"><div class="meter-fill" id="meter-fill" style="width:5%"></div></div>
+    <span class="meter-label" id="meter-right">🎉 Prompt ready</span>
+  </div>
+
+  <div style="height:24px"></div>
+
+  <div class="stage" id="stage"></div>
+
+  <div class="app-subscribe" id="app-subscribe" style="display:none">
+    <div class="app-subscribe-head">
+      <strong>Want more prompts like this?</strong>
+      <span>Get new AI Made Simple prompts and plain-English AI tips by email.</span>
+    </div>
+    <div class="ml-embedded" data-form="wgk56s"></div>
+  </div>
+
+  <div class="app-footer">Built with 💡 by AI Made Simple — a Strategic Digital Studio project</div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span class="foot-note">© 2026 Kevin D. Graham · Graham Strategic Media</span>
+    <a href="/#connect">Get in touch →</a>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- MailerLite Universal -->
+<script>
+    (function(w,d,e,u,f,l,n){w[f]=w[f]||function(){(w[f].q=w[f].q||[])
+    .push(arguments);},l=d.createElement(e),l.async=1,l.src=u,
+    n=d.getElementsByTagName(e)[0],n.parentNode.insertBefore(l,n);})
+    (window,document,'script','https://assets.mailerlite.com/js/universal.js','ml');
+    ml('account', '2530217');
+</script>
+<!-- End MailerLite Universal -->
+
+<script>
+/* ---------------- Data ---------------- */
+const CATEGORIES = [
+  {
+    id:'writing', title:'Writing', desc:'Emails, stories, and everyday writing', icon:'✍️',
+    color:'var(--coral)', bg:'var(--pink-bg)',
+    subtasks:[
+      { id:'email', title:'Write an email',
+        questions:[
+          {id:'topic', label:"What's the email about?", type:'textarea', placeholder:'e.g. asking my landlord to fix the heater'},
+          {id:'audience', label:'Who are you sending it to?', type:'text', placeholder:'e.g. my landlord, a coworker, a new client'}
+        ],
+        build:(a)=>`I need help writing an email. Here's what it's about: ${a.topic}. I'm sending this to: ${a.audience}. Please write the full email for me, including a subject line.`
+      },
+      { id:'caption', title:'Write a social media caption',
+        questions:[
+          {id:'topic', label:"What's the post about?", type:'textarea', placeholder:'e.g. a photo from my weekend hike'},
+          {id:'platform', label:'Which platform is this for?', type:'text', placeholder:'e.g. Instagram, TikTok, Facebook'}
+        ],
+        build:(a)=>`I need a caption for a ${a.platform} post. Here's what the post is about: ${a.topic}. Please write 3 short caption options I can choose from.`
+      },
+      { id:'story', title:'Write a short story or creative piece',
+        questions:[
+          {id:'topic', label:"What's the story or piece about?", type:'textarea', placeholder:'e.g. a short bedtime story about a dragon who is afraid of the dark'},
+          {id:'style', label:'Any characters, setting, or style you have in mind?', type:'textarea', placeholder:'e.g. keep it under 300 words, playful tone'}
+        ],
+        build:(a)=>`I'd like you to write a short creative piece. Here's the idea: ${a.topic}. Details to keep in mind: ${a.style}. Please write the full piece.`
+      },
+      { id:'improve', title:'Improve something I already wrote',
+        questions:[
+          {id:'text', label:'Paste or describe what you wrote', type:'textarea', placeholder:'Paste your text here, or describe it if it\'s long'},
+          {id:'issue', label:"What's not working about it?", type:'text', placeholder:'e.g. it sounds too stiff, too long, unclear'}
+        ],
+        build:(a)=>`Here is something I wrote:\n\n${a.text}\n\nThe problem I want fixed is: ${a.issue}. Please rewrite it and briefly explain what you changed.`
+      }
+    ]
+  },
+  {
+    id:'business', title:'Business', desc:'Plans, marketing, and client messages', icon:'💼',
+    color:'var(--mint)', bg:'var(--mint-bg)',
+    subtasks:[
+      { id:'plan', title:'Write a business plan outline',
+        questions:[
+          {id:'idea', label:"What's the business idea?", type:'textarea', placeholder:'e.g. a mobile dog grooming service'},
+          {id:'audience', label:"Who's it for (your customers)?", type:'text', placeholder:'e.g. busy pet owners in my city'}
+        ],
+        build:(a)=>`I need a simple business plan outline. My idea is: ${a.idea}. My target customers are: ${a.audience}. Please give me a beginner-friendly outline with clear sections and short explanations, not jargon.`
+      },
+      { id:'marketing', title:'Draft a marketing message',
+        questions:[
+          {id:'promoting', label:'What are you promoting?', type:'textarea', placeholder:'e.g. a summer sale on photography sessions'},
+          {id:'audience', label:'Who is your target audience?', type:'text', placeholder:'e.g. new parents, small business owners'}
+        ],
+        build:(a)=>`I need a marketing message. I'm promoting: ${a.promoting}. My target audience is: ${a.audience}. Please write a short, persuasive message I can use in an email or social post.`
+      },
+      { id:'client', title:'Write a professional message to a client',
+        questions:[
+          {id:'topic', label:"What's the message about?", type:'textarea', placeholder:'e.g. letting a client know their project is delayed by a week'},
+          {id:'relationship', label:"What's your relationship with this client?", type:'text', placeholder:'e.g. long-time client, first project together'}
+        ],
+        build:(a)=>`I need help writing a professional message to a client. It's about: ${a.topic}. My relationship with them: ${a.relationship}. Please write it in a way that's clear, honest, and keeps the relationship positive.`
+      },
+      { id:'brainstorm', title:'Brainstorm business ideas',
+        questions:[
+          {id:'area', label:'What kind of business or problem are you thinking about?', type:'textarea', placeholder:'e.g. something I can run part-time from home'},
+          {id:'constraints', label:'Any constraints (budget, time, skills)?', type:'text', placeholder:'e.g. under $500 to start, 10 hours a week'}
+        ],
+        build:(a)=>`I want to brainstorm business ideas. Here's what I'm thinking about: ${a.area}. My constraints are: ${a.constraints}. Please suggest 5 realistic ideas with a one-line explanation for each.`
+      }
+    ]
+  },
+  {
+    id:'learning', title:'Learning', desc:'Explanations, studying, and summaries', icon:'🎓',
+    color:'var(--sunny-dark)', bg:'var(--sunny-bg)',
+    subtasks:[
+      { id:'explain', title:'Explain a topic simply',
+        questions:[
+          {id:'topic', label:'What topic do you want explained?', type:'text', placeholder:'e.g. how interest rates work'},
+          {id:'level', label:'What\'s your current understanding level?', type:'select', options:['Total beginner','I know a little','I know some but want it clearer']}
+        ],
+        build:(a)=>`Please explain this topic to me: ${a.topic}. My current level is: ${a.level}. Use plain language, avoid jargon, and use an everyday example to help it click.`
+      },
+      { id:'study', title:'Help me study for something',
+        questions:[
+          {id:'subject', label:'What subject or test are you studying for?', type:'text', placeholder:'e.g. my real estate license exam'},
+          {id:'struggle', label:'What specifically are you struggling with?', type:'textarea', placeholder:'e.g. remembering formulas, understanding a concept'}
+        ],
+        build:(a)=>`I'm studying for: ${a.subject}. I'm struggling with: ${a.struggle}. Please explain it clearly and then quiz me with a few practice questions.`
+      },
+      { id:'summarize', title:"Summarize something I'm reading",
+        questions:[
+          {id:'text', label:'What are you reading or need summarized?', type:'textarea', placeholder:'Paste the text, or describe the article/book/chapter'},
+          {id:'length', label:'How long should the summary be?', type:'select', options:['A few bullet points','One short paragraph','A detailed summary']}
+        ],
+        build:(a)=>`Please summarize the following:\n\n${a.text}\n\nFormat: ${a.length}. Keep it easy to understand.`
+      },
+      { id:'skill', title:'Practice a skill',
+        questions:[
+          {id:'skill', label:'What skill are you practicing?', type:'text', placeholder:'e.g. conversational Spanish, basic Python'},
+          {id:'level', label:'What\'s your current level?', type:'select', options:['Complete beginner','Some experience','Intermediate']}
+        ],
+        build:(a)=>`I want to practice: ${a.skill}. My current level is: ${a.level}. Please act as a patient tutor, give me a short exercise, and correct me gently when I get something wrong.`
+      }
+    ]
+  },
+  {
+    id:'social', title:'Social Media', desc:'Content ideas, bios, and calendars', icon:'📱',
+    color:'#C9538A', bg:'var(--pink-bg)',
+    subtasks:[
+      { id:'caption2', title:'Write a caption',
+        questions:[
+          {id:'topic', label:"What's the post about?", type:'textarea', placeholder:'e.g. announcing a new product'},
+          {id:'feeling', label:'What feeling do you want the caption to give?', type:'text', placeholder:'e.g. excited, calm and trustworthy, funny'}
+        ],
+        build:(a)=>`I need a social media caption. The post is about: ${a.topic}. I want it to feel: ${a.feeling}. Please write 3 options of different lengths.`
+      },
+      { id:'ideas', title:'Come up with content ideas',
+        questions:[
+          {id:'brand', label:"What's your account or brand about?", type:'textarea', placeholder:'e.g. I teach beginners how to use AI tools'},
+          {id:'format', label:'What kind of content (Reels, carousels, photos)?', type:'text', placeholder:'e.g. Reels and carousels'}
+        ],
+        build:(a)=>`I need content ideas for my account. My account is about: ${a.brand}. I want ideas for: ${a.format}. Please give me 5 specific ideas, not general categories.`
+      },
+      { id:'bio', title:'Write a bio',
+        questions:[
+          {id:'about', label:'What do you want people to know about you or your brand?', type:'textarea', placeholder:'e.g. I help small business owners use AI without the tech overwhelm'},
+          {id:'platform', label:'Which platform?', type:'text', placeholder:'e.g. Instagram, LinkedIn'}
+        ],
+        build:(a)=>`I need a bio for ${a.platform}. Here's what I want people to know: ${a.about}. Please write 3 short bio options within the platform's usual character limit.`
+      },
+      { id:'calendar', title:'Plan a content calendar',
+        questions:[
+          {id:'niche', label:"What's your niche or brand?", type:'text', placeholder:'e.g. beginner-friendly AI education'},
+          {id:'frequency', label:'How often do you want to post?', type:'select', options:['A few times a week','Daily','Weekly']}
+        ],
+        build:(a)=>`I need a content calendar for my niche: ${a.niche}. I want to post: ${a.frequency}. Please suggest a simple posting plan for the next 2 weeks with topic ideas for each post.`
+      }
+    ]
+  },
+  {
+    id:'everyday', title:'Everyday Life', desc:'Planning, decisions, and daily tasks', icon:'🏡',
+    color:'var(--sky)', bg:'var(--sky-bg)',
+    subtasks:[
+      { id:'plan', title:'Plan an event or trip',
+        questions:[
+          {id:'what', label:'What are you planning?', type:'textarea', placeholder:'e.g. a weekend trip to Austin with my family'},
+          {id:'details', label:'Any key details (dates, budget, people)?', type:'textarea', placeholder:'e.g. 3 days, budget around $800, 2 adults and 2 kids'}
+        ],
+        build:(a)=>`Please help me plan: ${a.what}. Key details: ${a.details}. Please give me a simple day-by-day plan.`
+      },
+      { id:'decide', title:'Make a decision',
+        questions:[
+          {id:'decision', label:'What decision are you trying to make?', type:'textarea', placeholder:'e.g. whether to switch jobs'},
+          {id:'options', label:'What options are you considering?', type:'textarea', placeholder:'e.g. staying at my current job vs. taking a new offer'}
+        ],
+        build:(a)=>`I'm trying to decide: ${a.decision}. My options are: ${a.options}. Please help me think through the pros and cons of each option, then ask me a few questions to help me decide.`
+      },
+      { id:'letter', title:'Write a letter or note',
+        questions:[
+          {id:'who', label:'Who is this letter or note for?', type:'text', placeholder:'e.g. my grandmother, a friend I haven\'t talked to in a while'},
+          {id:'say', label:'What do you want to say?', type:'textarea', placeholder:'e.g. thank her for always being there for me'}
+        ],
+        build:(a)=>`I need help writing a letter to: ${a.who}. Here's what I want to say: ${a.say}. Please write it in a warm, genuine way, in my voice, not overly formal.`
+      },
+      { id:'solve', title:"Solve a problem I'm stuck on",
+        questions:[
+          {id:'problem', label:"What's the problem?", type:'textarea', placeholder:'e.g. my closet is always a mess no matter what I try'},
+          {id:'tried', label:'What have you already tried?', type:'textarea', placeholder:'e.g. bins, a hanging organizer'}
+        ],
+        build:(a)=>`I'm stuck on this problem: ${a.problem}. Here's what I've already tried: ${a.tried}. Please suggest a few practical solutions I haven't considered.`
+      }
+    ]
+  },
+  {
+    id:'career', title:'Career & Job Search', desc:'Resumes, cover letters, and interviews', icon:'📈',
+    color:'var(--plum)', bg:'var(--plum-bg)',
+    subtasks:[
+      { id:'resume', title:'Write a resume bullet point',
+        questions:[
+          {id:'task', label:'What did you do in this job or task?', type:'textarea', placeholder:'e.g. managed the front desk at a busy dental office'},
+          {id:'result', label:'What was the result or impact?', type:'textarea', placeholder:'e.g. cut patient wait times by scheduling more efficiently'}
+        ],
+        build:(a)=>`I need help writing a resume bullet point. Here's what I did: ${a.task}. Here's the result or impact: ${a.result}. Please write 2-3 strong bullet point options that use action verbs and, where possible, numbers.`
+      },
+      { id:'coverletter', title:'Write a cover letter',
+        questions:[
+          {id:'job', label:'What job are you applying for?', type:'textarea', placeholder:'e.g. office manager at a small marketing agency'},
+          {id:'fit', label:"Why are you a good fit (your experience or skills)?", type:'textarea', placeholder:'e.g. 5 years running the front office at a similar-sized company'}
+        ],
+        build:(a)=>`I need help writing a cover letter. The job is: ${a.job}. Here's why I'm a good fit: ${a.fit}. Please write a complete cover letter that sounds like me, not generic corporate language.`
+      },
+      { id:'interview', title:'Prepare for an interview',
+        questions:[
+          {id:'job', label:'What job or interview is this for?', type:'text', placeholder:'e.g. a customer service role at a local bank'},
+          {id:'worry', label:"What are you nervous about or want to practice?", type:'textarea', placeholder:'e.g. answering "tell me about a time you dealt with a difficult customer"'}
+        ],
+        build:(a)=>`I have an interview coming up for: ${a.job}. I want to practice this: ${a.worry}. Please ask me likely interview questions one at a time and give me feedback on my answers.`
+      },
+      { id:'linkedin', title:'Write a LinkedIn message',
+        questions:[
+          {id:'who', label:'Who are you messaging and why?', type:'textarea', placeholder:'e.g. a hiring manager at a company I want to work for'},
+          {id:'goal', label:"What's the goal of the message?", type:'text', placeholder:'e.g. ask about an open position, request a quick chat'}
+        ],
+        build:(a)=>`I need a LinkedIn message. Who I'm messaging and why: ${a.who}. My goal: ${a.goal}. Please write a short, friendly, professional message that doesn't sound too salesy.`
+      }
+    ]
+  },
+  {
+    id:'money', title:'Money & Budgeting', desc:'Budgets, purchases, and savings goals', icon:'💰',
+    color:'var(--olive)', bg:'var(--olive-bg)',
+    subtasks:[
+      { id:'budget', title:'Make a simple budget',
+        questions:[
+          {id:'income', label:"What's your monthly income (roughly)?", type:'text', placeholder:'e.g. about $3,200 a month'},
+          {id:'expenses', label:'What are your main expenses or spending categories?', type:'textarea', placeholder:'e.g. rent, car payment, groceries, subscriptions'}
+        ],
+        build:(a)=>`I want help building a simple monthly budget. My rough income: ${a.income}. My main expenses: ${a.expenses}. Please help me organize this into a clear, beginner-friendly budget with categories, and ask me questions if you need more detail. Don't give me specific financial or investment advice — just help me organize and understand my own numbers.`
+      },
+      { id:'compare', title:'Compare two purchase options',
+        questions:[
+          {id:'options', label:'What are the two options you\'re comparing?', type:'textarea', placeholder:'e.g. a used car for $12,000 vs. a new car for $22,000'},
+          {id:'priority', label:'What matters most to you in this decision?', type:'text', placeholder:'e.g. long-term value, monthly payment, reliability'}
+        ],
+        build:(a)=>`I'm trying to decide between two purchases. The options: ${a.options}. What matters most to me: ${a.priority}. Please help me think through the pros and cons of each so I can decide for myself — don't tell me which one to pick.`
+      },
+      { id:'savings', title:'Plan for a savings goal',
+        questions:[
+          {id:'goal', label:'What are you saving for?', type:'text', placeholder:'e.g. a $2,000 emergency fund'},
+          {id:'timeline', label:'How much do you want to save and by when?', type:'text', placeholder:'e.g. $2,000 within the next 10 months'}
+        ],
+        build:(a)=>`I want help planning a savings goal. What I'm saving for: ${a.goal}. My target: ${a.timeline}. Please help me break this into a simple monthly savings plan and suggest a few practical ways to stay on track.`
+      },
+      { id:'bill', title:'Understand a bill or statement',
+        questions:[
+          {id:'type', label:'What kind of bill or statement is this?', type:'text', placeholder:'e.g. a credit card statement, a medical bill, a utility bill'},
+          {id:'confusing', label:"What part is confusing you? (paste or describe it)", type:'textarea', placeholder:'e.g. there\'s a fee I don\'t recognize and I don\'t understand the due date terms'}
+        ],
+        build:(a)=>`I need help understanding a bill or statement. Type: ${a.type}. What's confusing me: ${a.confusing}. Please explain what these terms and charges typically mean in plain language. Don't give me legal or financial advice — just help me understand what I'm looking at.`
+      }
+    ]
+  },
+  {
+    id:'photography', title:'Photography & Creative Projects', desc:'Captions, shoots, and creative ideas', icon:'📸',
+    color:'var(--amber)', bg:'var(--amber-bg)',
+    subtasks:[
+      { id:'photocaption', title:'Write a caption for a photo',
+        questions:[
+          {id:'photo', label:"What's the photo of?", type:'textarea', placeholder:'e.g. a golden-hour portrait session with a client and her dog'},
+          {id:'vibe', label:'What feeling or vibe do you want the caption to have?', type:'text', placeholder:'e.g. warm and heartfelt, short and punchy, funny'}
+        ],
+        build:(a)=>`I need a caption for a photo. The photo is of: ${a.photo}. I want the caption to feel: ${a.vibe}. Please write 3 caption options of different lengths.`
+      },
+      { id:'shoot', title:'Plan a photo shoot',
+        questions:[
+          {id:'purpose', label:"What's the shoot for?", type:'text', placeholder:'e.g. a client\'s engagement photos, a personal portfolio project'},
+          {id:'style', label:'Any specific style, location, or mood you have in mind?', type:'textarea', placeholder:'e.g. outdoors, golden hour, candid and relaxed'}
+        ],
+        build:(a)=>`I'm planning a photo shoot. What it's for: ${a.purpose}. Style, location, or mood: ${a.style}. Please help me plan a simple shot list and shoot flow.`
+      },
+      { id:'creativeidea', title:'Come up with a creative project idea',
+        questions:[
+          {id:'type', label:'What kind of creative project (photography, art, video, etc.)?', type:'text', placeholder:'e.g. a photo series, a short video, a mixed-media art piece'},
+          {id:'theme', label:'Any theme, constraint, or inspiration you want to build from?', type:'textarea', placeholder:'e.g. themed around small-town life, using only natural light'}
+        ],
+        build:(a)=>`I want help coming up with a creative project idea. Type of project: ${a.type}. Theme or constraint: ${a.theme}. Please suggest a few specific, doable project ideas, not general categories.`
+      },
+      { id:'feedback', title:'Get feedback on a creative idea',
+        questions:[
+          {id:'idea', label:'Describe your idea', type:'textarea', placeholder:'e.g. a photo series comparing morning and night routines of local small business owners'},
+          {id:'feedbacktype', label:'What kind of feedback are you looking for?', type:'text', placeholder:'e.g. strengths and weaknesses, a fresh perspective, ways to make it stand out'}
+        ],
+        build:(a)=>`I'd like feedback on a creative idea. Here's the idea: ${a.idea}. Kind of feedback I want: ${a.feedbacktype}. Please give me honest, constructive feedback.`
+      }
+    ]
+  }
+];
+
+const TONES = ['Friendly and warm','Professional','Casual and fun','Formal','Persuasive'];
+
+const CUSTOM_CATEGORY = {
+  id:'custom', title:'Write your own', desc:'Describe exactly what you need', icon:'➕',
+  color:'var(--ink-soft)', bg:'var(--line)',
+  subtasks:[
+    { id:'freeform', title:'',
+      questions:[
+        {id:'need', label:'What do you need help with?', type:'textarea', placeholder:'Describe it in your own words — anything at all'}
+      ],
+      build:(a)=>`I need help with this: ${a.need}.`
+    }
+  ]
+};
+
+/* ---------------- State ---------------- */
+let state = {
+  step:'category', // category | subtask | questions | result | history | history-detail
+  categoryId:null,
+  subtaskId:null,
+  answers:{},
+  tone:TONES[0],
+  extra:'',
+  surpriseTitle:null,
+  historyId:null
+};
+
+function getCategory(){
+  if(state.categoryId==='custom') return CUSTOM_CATEGORY;
+  return CATEGORIES.find(c=>c.id===state.categoryId);
+}
+function getSubtask(){ const c=getCategory(); return c ? c.subtasks.find(s=>s.id===state.subtaskId) : null; }
+
+function reset(){
+  state = { step:'category', categoryId:null, subtaskId:null, answers:{}, tone:TONES[0], extra:'', surpriseTitle:null };
+  render();
+}
+
+function goCategory(id){
+  state.categoryId = id;
+  state.subtaskId = null;
+  state.answers = {};
+  state.surpriseTitle = null;
+  if(id === 'custom'){
+    state.subtaskId = CUSTOM_CATEGORY.subtasks[0].id;
+    state.step = 'questions';
+  } else {
+    state.step = 'subtask';
+  }
+  render();
+}
+
+function goSubtask(id){
+  state.subtaskId = id;
+  state.answers = {};
+  state.surpriseTitle = null;
+  state.step = 'questions';
+  render();
+}
+
+function updateMeter(){
+  const order = ['category','subtask','questions','result'];
+  const idx = order.indexOf(state.step);
+  if(idx === -1) return;
+  const pct = [8, 30, 60, 100][idx];
+  document.getElementById('meter-fill').style.width = pct + '%';
+}
+
+/* ---------------- Rendering ---------------- */
+function render(){
+  updateMeter();
+  const stage = document.getElementById('stage');
+  const cat = getCategory();
+  if(cat){
+    stage.style.setProperty('--cat-color', cat.color);
+    stage.style.setProperty('--cat-bg', cat.bg);
+  }
+
+  const subscribe = document.getElementById('app-subscribe');
+  if(subscribe) subscribe.style.display = state.step === 'result' ? 'block' : 'none';
+
+  if(state.step==='category') return renderCategory(stage);
+  if(state.step==='subtask') return renderSubtask(stage);
+  if(state.step==='questions') return renderQuestions(stage);
+  if(state.step==='result') return renderResult(stage);
+  if(state.step==='history') return renderHistory(stage);
+  if(state.step==='history-detail') return renderHistoryDetail(stage);
+}
+
+function crumbs(items){
+  return `<div class="crumbs">${items.map((it,i)=>{
+    const isLast = i===items.length-1;
+    const sep = i>0 ? '<span class="sep">›</span>' : '';
+    if(isLast) return `${sep}<span class="current">${it.label}</span>`;
+    return `${sep}<button onclick="${it.action}">${it.label}</button>`;
+  }).join('')}</div>`;
+}
+
+function renderCategory(stage){
+  const showOnboarding = !localStorage.getItem('hasSeenOnboarding');
+  stage.innerHTML = `
+    ${showOnboarding ? `
+      <div class="onboarding-banner" id="onboarding-banner">
+        <p>👋 New here? <strong>Pick a category → answer a few questions → get your ready-to-copy prompt.</strong></p>
+        <button class="app-btn app-btn-ghost" onclick="dismissOnboarding()" aria-label="Dismiss onboarding tip">Got it</button>
+      </div>
+    ` : ''}
+    <h2>What do you need help with?</h2>
+    <p class="sub">Pick a category to get started. You'll answer a few quick questions next.</p>
+    <div class="app-btn-row" style="margin-bottom:16px">
+      <button class="app-btn app-btn-ghost" onclick="surpriseMe()">🎲 Surprise me</button>
+    </div>
+    <div class="cat-grid">
+      ${CATEGORIES.map(c=>`
+        <button class="cat-card" style="--cat-color:${c.color}; --cat-bg:${c.bg}" onclick="goCategory('${c.id}')">
+          <div class="cat-icon" style="background:${c.bg}" aria-hidden="true">${c.icon}</div>
+          <div class="cat-title">${c.title}</div>
+          <div class="cat-desc">${c.desc}</div>
+        </button>
+      `).join('')}
+      <button class="cat-card cat-card--custom" onclick="goCategory('custom')">
+        <div class="cat-icon" aria-hidden="true">${CUSTOM_CATEGORY.icon}</div>
+        <div class="cat-title">${CUSTOM_CATEGORY.title}</div>
+        <div class="cat-desc">${CUSTOM_CATEGORY.desc}</div>
+      </button>
+    </div>
+  `;
+}
+
+function dismissOnboarding(){
+  localStorage.setItem('hasSeenOnboarding', 'true');
+  const banner = document.getElementById('onboarding-banner');
+  if(banner) banner.remove();
+}
+
+function surpriseMe(){
+  const cat = CATEGORIES[Math.floor(Math.random()*CATEGORIES.length)];
+  const sub = cat.subtasks[Math.floor(Math.random()*cat.subtasks.length)];
+  state.categoryId = cat.id;
+  state.subtaskId = sub.id;
+  state.answers = {};
+  state.surpriseTitle = sub.title;
+  state.step = 'questions';
+  render();
+}
+
+function renderSubtask(stage){
+  const cat = getCategory();
+  stage.innerHTML = `
+    ${crumbs([{label:'Category', action:'reset()'},{label:cat.title}])}
+    <h2>${cat.icon} ${cat.title}</h2>
+    <p class="sub">What exactly do you need?</p>
+    <div class="sub-list">
+      ${cat.subtasks.map(s=>`
+        <button class="sub-item" style="--cat-color:${cat.color}" onclick="goSubtask('${s.id}')">
+          <span class="sub-title">${s.title}</span>
+          <span class="sub-arrow" aria-hidden="true">→</span>
+        </button>
+      `).join('')}
+    </div>
+    <div class="app-btn-row" style="margin-top:20px">
+      <button class="app-btn app-btn-ghost" onclick="reset()">← Back</button>
+    </div>
+  `;
+}
+
+function renderQuestions(stage){
+  const cat = getCategory();
+  const sub = getSubtask();
+
+  const chips = Object.entries(state.answers)
+    .filter(([k,v])=>v && v.trim())
+    .map(([k,v])=>`<span class="chip">${v.length>28 ? v.slice(0,28)+'…' : v}</span>`)
+    .join('');
+
+  const questionsHtml = sub.questions.map(q=>{
+    let field = '';
+    if(q.type==='textarea'){
+      field = `<textarea id="q-${q.id}" placeholder="${q.placeholder||''}" oninput="onAnswer('${q.id}', this.value)">${state.answers[q.id]||''}</textarea>`;
+    } else if(q.type==='select'){
+      field = `<select id="q-${q.id}" onchange="onAnswer('${q.id}', this.value)">
+        ${q.options.map(o=>`<option value="${o}" ${state.answers[q.id]===o?'selected':''}>${o}</option>`).join('')}
+      </select>`;
+    } else {
+      field = `<input type="text" id="q-${q.id}" placeholder="${q.placeholder||''}" value="${state.answers[q.id]||''}" oninput="onAnswer('${q.id}', this.value)">`;
+    }
+    return `<div class="q-block"><label>${q.label}</label>${field}</div>`;
+  }).join('');
+
+  const isCustom = cat.id === 'custom';
+  const backAction = isCustom ? 'reset()' : `goCategory('${cat.id}')`;
+  const crumbItems = isCustom
+    ? [{label:'Category', action:'reset()'},{label:cat.title}]
+    : [{label:'Category', action:'reset()'},{label:cat.title, action:`goCategory('${cat.id}')`},{label:sub.title}];
+
+  stage.innerHTML = `
+    ${crumbs(crumbItems)}
+    <h2>A few quick questions</h2>
+    <p class="sub">Plain English is fine — no need to overthink your answers.</p>
+
+    ${state.surpriseTitle ? `
+      <div class="surprise-banner">🎲 Here's an idea: <strong>${state.surpriseTitle}</strong> — not feeling it? <button onclick="reset()">Choose something else</button></div>
+    ` : ''}
+
+    <div class="preview-strip">${chips}</div>
+
+    ${questionsHtml}
+
+    <div class="q-block">
+      <label>What tone do you want?</label>
+      <select id="q-tone" onchange="onTone(this.value)">
+        ${TONES.map(t=>`<option value="${t}" ${state.tone===t?'selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>
+
+    <div class="q-block">
+      <label>Anything else to include? <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label>
+      <textarea id="q-extra" placeholder="e.g. keep it under 150 words" oninput="onExtra(this.value)">${state.extra}</textarea>
+    </div>
+
+    <div class="app-btn-row">
+      <button class="app-btn app-btn-ghost" onclick="${backAction}">← Back</button>
+      <button class="app-btn app-btn-primary" id="build-btn" onclick="buildResult()">Build my prompt →</button>
+    </div>
+  `;
+
+  updateBuildButton();
+}
+
+function onAnswer(id, value){
+  state.answers[id] = value;
+  updateBuildButton();
+  // update chip preview without a full re-render (keeps focus in the field)
+  const chipsWrap = document.querySelector('.preview-strip');
+  if(chipsWrap){
+    const chips = Object.entries(state.answers)
+      .filter(([k,v])=>v && v.trim())
+      .map(([k,v])=>`<span class="chip">${v.length>28 ? v.slice(0,28)+'…' : v}</span>`)
+      .join('');
+    chipsWrap.innerHTML = chips;
+  }
+}
+
+function onTone(value){ state.tone = value; }
+function onExtra(value){ state.extra = value; }
+
+function updateBuildButton(){
+  const sub = getSubtask();
+  if(!sub) return;
+  const btn = document.getElementById('build-btn');
+  if(!btn) return;
+  const allFilled = sub.questions.every(q => state.answers[q.id] && state.answers[q.id].trim());
+  btn.disabled = !allFilled;
+}
+
+function buildResult(){
+  const cat = getCategory();
+  const sub = getSubtask();
+  const promptText = assemblePrompt();
+  addToHistory({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    categoryId: cat.id,
+    categoryTitle: cat.title,
+    icon: cat.icon,
+    color: cat.color,
+    bg: cat.bg,
+    subtaskTitle: sub.title || 'Custom prompt',
+    promptText,
+    timestamp: new Date().toISOString()
+  });
+  state.step = 'result';
+  render();
+}
+
+function assemblePrompt(){
+  const sub = getSubtask();
+  let text = sub.build(state.answers);
+  text += ` Please write in a ${state.tone.toLowerCase()} tone.`;
+  if(state.extra && state.extra.trim()){
+    text += ` Also keep in mind: ${state.extra.trim()}.`;
+  }
+  return text;
+}
+
+function renderResult(stage){
+  const cat = getCategory();
+  const sub = getSubtask();
+  const prompt = assemblePrompt();
+  const isCustom = cat.id === 'custom';
+  const crumbItems = isCustom
+    ? [{label:'Category', action:'reset()'},{label:cat.title, action:`goCategory('${cat.id}')`},{label:'Your prompt'}]
+    : [{label:'Category', action:'reset()'},{label:cat.title, action:`goCategory('${cat.id}')`},{label:sub.title, action:`goSubtask('${sub.id}')`},{label:'Your prompt'}];
+
+  stage.innerHTML = `
+    ${crumbs(crumbItems)}
+    <span class="celebrate">🎉 Your prompt is ready</span>
+    <h2>Copy this into your AI tool</h2>
+    <p class="sub">Paste it into ChatGPT, Claude, Gemini, or any AI chat you use.</p>
+
+    <div class="result-card">
+      <div class="result-text" id="result-text">${prompt}</div>
+    </div>
+
+    <div class="app-btn-row">
+      <button class="app-btn app-btn-primary" onclick="copyPrompt()">📋 Copy prompt</button>
+      <button class="app-btn app-btn-ghost" onclick="openImagePicker()">🖼️ Save as image</button>
+      <span class="copy-feedback" id="copy-feedback">Copied!</span>
+    </div>
+
+    <div class="image-format-picker" id="image-format-picker" style="display:none">
+      <span class="q-hint">Choose a format:</span>
+      <button class="app-btn app-btn-ghost" onclick="exportPromptImage('square')">Square (Instagram post)</button>
+      <button class="app-btn app-btn-ghost" onclick="exportPromptImage('story')">Story (Instagram story)</button>
+    </div>
+
+    <div class="destination-row">
+      <a class="dest-pill" href="https://chat.openai.com" target="_blank" rel="noopener">Open ChatGPT ↗</a>
+      <a class="dest-pill" href="https://claude.ai" target="_blank" rel="noopener">Open Claude ↗</a>
+      <a class="dest-pill" href="https://gemini.google.com" target="_blank" rel="noopener">Open Gemini ↗</a>
+    </div>
+
+    <div class="app-btn-row" style="margin-top:24px">
+      <button class="app-btn app-btn-ghost" onclick="goSubtask('${sub.id}')">← Edit answers</button>
+      <button class="app-btn app-btn-ghost" onclick="reset()">Start a new prompt</button>
+    </div>
+  `;
+}
+
+function copyTextFromElement(elId){
+  const text = document.getElementById(elId).innerText;
+  const feedback = document.getElementById('copy-feedback');
+  const showFeedback = ()=>{
+    feedback.classList.add('show');
+    setTimeout(()=>feedback.classList.remove('show'), 1800);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(showFeedback).catch(()=>{
+      fallbackCopy(text); showFeedback();
+    });
+  } else {
+    fallbackCopy(text); showFeedback();
+  }
+}
+
+function copyPrompt(){ copyTextFromElement('result-text'); }
+function copyHistoryPrompt(){ copyTextFromElement('history-detail-text'); }
+
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+/* ---------------- Saved prompt history ---------------- */
+const HISTORY_KEY = 'promptStarterHistory';
+const HISTORY_LIMIT = 20;
+
+function loadHistory(){
+  try{ return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }
+  catch(e){ return []; }
+}
+function saveHistoryList(list){
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(list));
+}
+function addToHistory(entry){
+  const list = loadHistory();
+  list.unshift(entry);
+  saveHistoryList(list.slice(0, HISTORY_LIMIT));
+}
+function deleteHistoryEntry(id){
+  saveHistoryList(loadHistory().filter(e=>e.id!==id));
+}
+function clearAllHistory(){
+  if(!confirm("Delete all saved prompts? This can't be undone.")) return;
+  saveHistoryList([]);
+  render();
+}
+
+function goHistory(){ state.step = 'history'; render(); }
+function viewHistoryEntry(id){ state.historyId = id; state.step = 'history-detail'; render(); }
+
+function formatDate(iso){
+  return new Date(iso).toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'});
+}
+
+function renderHistory(stage){
+  const list = loadHistory();
+  stage.innerHTML = `
+    ${crumbs([{label:'Category', action:'reset()'},{label:'My saved prompts'}])}
+    <h2>My saved prompts</h2>
+    <p class="sub">Your last ${HISTORY_LIMIT} generated prompts, saved on this device.</p>
+    ${list.length === 0 ? `
+      <p class="sub">Nothing saved yet — build a prompt and it'll show up here.</p>
+    ` : `
+      <div class="app-btn-row" style="margin-bottom:16px">
+        <button class="app-btn app-btn-ghost" onclick="clearAllHistory()">Clear all</button>
+      </div>
+      <div class="history-list">
+        ${list.map(e=>`
+          <div class="history-item" style="--cat-color:${e.color}" tabindex="0" role="button"
+               aria-label="View saved prompt: ${e.categoryTitle}, ${e.subtaskTitle}, saved ${formatDate(e.timestamp)}"
+               onclick="viewHistoryEntry('${e.id}')"
+               onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();viewHistoryEntry('${e.id}')}">
+            <div class="cat-icon" style="background:${e.bg}" aria-hidden="true">${e.icon}</div>
+            <div class="history-item__body">
+              <div class="history-item__title">${e.categoryTitle} · ${e.subtaskTitle}</div>
+              <div class="history-item__preview">${e.promptText.slice(0,60)}${e.promptText.length>60?'…':''}</div>
+              <div class="history-item__date">${formatDate(e.timestamp)}</div>
+            </div>
+            <button class="icon-btn icon-btn--small" aria-label="Delete saved prompt: ${e.categoryTitle}, ${e.subtaskTitle}" onclick="event.stopPropagation(); deleteHistoryEntry('${e.id}'); render();">🗑️</button>
+          </div>
+        `).join('')}
+      </div>
+    `}
+    <div class="app-btn-row" style="margin-top:20px">
+      <button class="app-btn app-btn-ghost" onclick="reset()">← Back</button>
+    </div>
+  `;
+}
+
+function renderHistoryDetail(stage){
+  const entry = loadHistory().find(e=>e.id===state.historyId);
+  if(!entry) return renderHistory(stage);
+  stage.innerHTML = `
+    ${crumbs([{label:'Category', action:'reset()'},{label:'My saved prompts', action:'goHistory()'},{label:entry.categoryTitle}])}
+    <h2>${entry.icon} ${entry.categoryTitle} · ${entry.subtaskTitle}</h2>
+    <p class="sub">Saved ${formatDate(entry.timestamp)}</p>
+
+    <div class="result-card">
+      <div class="result-text" id="history-detail-text">${entry.promptText}</div>
+    </div>
+
+    <div class="app-btn-row">
+      <button class="app-btn app-btn-primary" onclick="copyHistoryPrompt()">📋 Copy prompt</button>
+      <span class="copy-feedback" id="copy-feedback">Copied!</span>
+    </div>
+
+    <div class="app-btn-row" style="margin-top:24px">
+      <button class="app-btn app-btn-ghost" onclick="deleteHistoryEntry('${entry.id}'); goHistory();">🗑️ Delete</button>
+      <button class="app-btn app-btn-ghost" onclick="goHistory()">← Back to saved prompts</button>
+    </div>
+  `;
+}
+
+/* ---------------- Shareable image export ---------------- */
+async function exportPromptImage(format){
+  const cat = getCategory();
+  const sub = getSubtask();
+  const promptText = document.getElementById('result-text').innerText;
+  const width = 360;
+  const height = format === 'story' ? 640 : 360;
+
+  const card = document.createElement('div');
+  card.className = 'share-card';
+  card.style.width = width + 'px';
+  card.style.height = height + 'px';
+  card.innerHTML = `
+    <div class="share-card__brand">✨ AI Made Simple</div>
+    <div class="share-card__tag" style="background:${cat.bg}; color:${cat.color}">${cat.icon} ${cat.title}${sub && sub.title ? ' · ' + sub.title : ''}</div>
+    <div class="share-card__text-wrap"><div class="share-card__text" id="share-card-text">${promptText}</div></div>
+    <div class="share-card__handle">@strategicdownloads</div>
+  `;
+  document.body.appendChild(card);
+
+  const textEl = card.querySelector('#share-card-text');
+  let fontSize = format === 'story' ? 22 : 19;
+  textEl.style.fontSize = fontSize + 'px';
+  let guard = 0;
+  while(textEl.scrollHeight > textEl.parentElement.clientHeight && fontSize > 10 && guard < 30){
+    fontSize -= 1;
+    textEl.style.fontSize = fontSize + 'px';
+    guard++;
+  }
+
+  try{
+    const canvas = await html2canvas(card, {scale:3, backgroundColor:'#FAF7F1'});
+    const link = document.createElement('a');
+    link.download = `ai-made-simple-prompt-${format}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } finally {
+    document.body.removeChild(card);
+    const picker = document.getElementById('image-format-picker');
+    if(picker) picker.style.display = 'none';
+  }
+}
+
+function openImagePicker(){
+  const picker = document.getElementById('image-format-picker');
+  if(!picker) return;
+  picker.style.display = picker.style.display === 'flex' ? 'none' : 'flex';
+}
+
+/* ---------------- Dark mode ---------------- */
+const THEME_KEY = 'promptStarterTheme';
+
+function applyTheme(theme, persist){
+  document.documentElement.setAttribute('data-theme', theme);
+  const toggle = document.getElementById('theme-toggle');
+  if(toggle){
+    toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  }
+  if(persist) localStorage.setItem(THEME_KEY, theme);
+}
+
+function initTheme(){
+  const saved = localStorage.getItem(THEME_KEY);
+  const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(theme, false);
+}
+
+function toggleTheme(){
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark', true);
+}
+
+initTheme();
+render();
+</script>
+
+</body>
+</html>
