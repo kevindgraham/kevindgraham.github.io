@@ -83,7 +83,6 @@
   .btn-gold:hover{background:#EDB559;}
   .btn-outline{border-color:var(--line);color:var(--ink);}
   .btn-outline:hover{border-color:var(--gold-deep);}
-  .btn[aria-disabled="true"]{opacity:0.6;cursor:default;}
 
   .tool-card{
     background:var(--cream-card);
@@ -91,7 +90,7 @@
     border-radius:6px;
     padding:28px 26px;
     display:grid;
-    grid-template-columns:1.4fr auto auto;
+    grid-template-columns:1.4fr auto;
     gap:20px;
     align-items:center;
     margin-top:40px;
@@ -99,7 +98,6 @@
   .tool-card h2{font-size:1.2rem;}
   .tool-card p{margin:10px 0 0;color:#4B4438;font-size:0.96rem;}
   .tool-card .btn-row{display:flex;flex-direction:column;gap:8px;align-items:flex-start;}
-  .tool-card .soon{font-size:0.78rem;color:#8A8272;font-style:italic;}
 
   footer{background:var(--navy-deep);color:#D8D0C0;padding:48px 0 32px;}
   footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
@@ -151,12 +149,7 @@
         <p>Pick a category, answer a few plain-English questions, and get a ready-to-copy prompt for ChatGPT, Claude, or Gemini.</p>
       </div>
       <div class="btn-row">
-        <a class="btn btn-gold" href="#" aria-disabled="true">Try it free</a>
-        <span class="soon">Coming soon</span>
-      </div>
-      <div class="btn-row">
-        <a class="btn btn-outline" href="#" aria-disabled="true">Get the full version</a>
-        <span class="soon">Coming soon</span>
+        <a class="btn btn-gold" href="/toolkit/prompt-builder/">Try it free</a>
       </div>
     </div>
   </div>
