@@ -9,3 +9,16 @@ url: "https://kevindgraham.com"
 # "sitemap: false" to its front matter.
 plugins:
   - jekyll-sitemap
+
+# teach-files/ holds internal build notes and source docs for the /teach page
+# (the real downloads live in assets/teach/) — keep it out of the published site.
+exclude:
+  - teach-files
+
+# Keep the /teach downloads (PDFs etc.) out of sitemap.xml too — the page
+# they're linked from is noindex, so a direct sitemap entry would undercut that.
+defaults:
+  - scope:
+      path: "assets/teach"
+    values:
+      sitemap: false
