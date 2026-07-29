@@ -118,15 +118,6 @@ sitemap: false
   .update-entry p{margin:6px 0;}
   .update-entry strong{color:var(--ink);}
 
-  /* PLACEHOLDER BLOCKS (MailerLite / Formspree) */
-  .placeholder-box{
-    background:var(--cream-card);border:1px dashed var(--line);border-radius:8px;
-    padding:22px;margin-top:22px;
-  }
-  .placeholder-label{
-    font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.08em;
-    text-transform:uppercase;color:#8A8272;margin-bottom:14px;display:block;
-  }
   .fake-field{
     width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:4px;
     font-family:inherit;font-size:0.96rem;background:#fff;color:var(--ink);margin-bottom:12px;
@@ -351,9 +342,10 @@ sitemap: false
     </ul>
     <p class="muted">Sessions run from a single 60-minute faculty session to a full PD day, in person in the Dallas–Fort Worth area or virtually.</p>
 
-    <div class="placeholder-box">
-      <span class="placeholder-label">Formspree form — add the endpoint to the form's action attribute</span>
-      <form action="#" method="POST" onsubmit="return false;">
+    <div class="resource-card" style="margin-top:22px;">
+      <form action="https://formspree.io/f/xdaqjnly" method="POST">
+        <input type="hidden" name="_subject" value="Workshop inquiry from /teach">
+
         <label for="teach-name">Name</label>
         <input class="fake-field" type="text" id="teach-name" name="name">
 
@@ -372,7 +364,7 @@ sitemap: false
         <label for="teach-timeframe">Timeframe</label>
         <input class="fake-field" type="text" id="teach-timeframe" name="timeframe">
 
-        <a class="btn btn-gold" href="#feedback" onclick="return false;">Send inquiry</a>
+        <button type="submit" class="btn btn-gold">Send inquiry</button>
       </form>
     </div>
     <p class="rights-note">Also happy to help with bulk orders for a department or campus — just ask.</p>
