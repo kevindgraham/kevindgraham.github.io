@@ -1,0 +1,43 @@
+---
+sitemap: false
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C9NWCWYF0C"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  // Short link: kevindgraham.com/time -> free teacher guide PDF.
+  // Wait for the analytics page view to send before leaving, but never more than 1s.
+  var guideUrl = '/assets/teach/Take%20Your%20Time%20Back.pdf';
+  var hasRedirected = false;
+  function goToGuide() {
+    if (hasRedirected) return;
+    hasRedirected = true;
+    window.location.replace(guideUrl);
+  }
+  gtag('config', 'G-C9NWCWYF0C', { event_callback: goToGuide });
+  setTimeout(goToGuide, 1000);
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<!-- Fallback for visitors with JavaScript turned off -->
+<meta http-equiv="refresh" content="2; url=/assets/teach/Take%20Your%20Time%20Back.pdf">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<title>Free Teacher Guide | Kevin D. Graham</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #fff; color: #222; text-align: center; padding: 3rem 1rem; }
+  a { color: #0b57d0; }
+</style>
+</head>
+<body>
+  <p>Taking you to the free teacher guide&hellip;</p>
+  <p>If nothing happens, <a href="/assets/teach/Take%20Your%20Time%20Back.pdf">open the guide here</a>.</p>
+</body>
+</html>
